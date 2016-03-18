@@ -25,7 +25,7 @@ func pathGroups(b *backend) *framework.Path {
 		Callbacks: map[logical.Operation]framework.OperationFunc{
 			logical.DeleteOperation: b.pathGroupDelete,
 			logical.ReadOperation:   b.pathGroupRead,
-			logical.UpdateOperation:  b.pathGroupWrite,
+			logical.UpdateOperation: b.pathGroupWrite,
 		},
 
 		HelpSynopsis:    pathGroupHelpSyn,
@@ -81,8 +81,12 @@ func (b *backend) pathGroupWrite(
 	req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
 	name := d.Get("name").(string)
 	policies := strings.Split(d.Get("policies").(string), ",")
-	for i, p := range policies {
-		policies[i] = strings.TrimSpace(p)
+	for i, policy := range policies {
+		policies[i] = strings.TrimSpace(policy)
+		if policies[i] == "root" {
+			policies = []string{"root"}
+			break
+		}
 	}
 
 	// Store it

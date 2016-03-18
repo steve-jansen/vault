@@ -62,8 +62,12 @@ func (b *backend) pathUserPoliciesUpdate(
 
 func (b *backend) updateUserPolicies(req *logical.Request, d *framework.FieldData, userEntry *UserEntry) error {
 	policies := strings.Split(d.Get("policies").(string), ",")
-	for i, p := range policies {
-		policies[i] = strings.TrimSpace(p)
+	for i, policy := range policies {
+		policies[i] = strings.TrimSpace(policy)
+		if policies[i] == "root" {
+			policies = []string{"root"}
+			break
+		}
 	}
 	userEntry.Policies = policies
 	return nil

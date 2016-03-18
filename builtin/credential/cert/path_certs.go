@@ -138,8 +138,12 @@ func (b *backend) pathCertWrite(
 	certificate := d.Get("certificate").(string)
 	displayName := d.Get("display_name").(string)
 	policies := strings.Split(d.Get("policies").(string), ",")
-	for i, p := range policies {
-		policies[i] = strings.TrimSpace(p)
+	for i, policy := range policies {
+		policies[i] = strings.TrimSpace(policy)
+		if policies[i] == "root" {
+			policies = []string{"root"}
+			break
+		}
 	}
 
 	// Default the display name to the certificate name if not given
